@@ -61,8 +61,15 @@ class Client
             curl_setopt($curlHandler, CURLOPT_CUSTOMREQUEST, $method);
         }
 
-        if ((count($parameters) > 0 || is_string($parameters)) && in_array($method, array(self::METHOD_POST, self::METHOD_PUT, self::METHOD_DELETE))) {
-            curl_setopt($curlHandler, CURLOPT_POSTFIELDS, $parameters);
+        if (in_array($method, array(self::METHOD_POST, self::METHOD_PUT, self::METHOD_DELETE))) {
+            if (is_string($parameters)) {
+                curl_setopt($curlHandler, CURLOPT_POSTFIELDS, $parameters);
+            }
+            if(is_countable($parameters)) {
+                if (count($parameters) > 0) {
+                    curl_setopt($curlHandler, CURLOPT_POSTFIELDS, $parameters);
+                }
+            }
         }
 
         $responseBody = curl_exec($curlHandler);
